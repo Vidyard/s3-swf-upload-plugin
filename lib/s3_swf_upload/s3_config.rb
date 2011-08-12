@@ -8,8 +8,8 @@ module S3SwfUpload
     def self.load_config
       begin
         filename = "#{Rails.root}/config/amazon_s3.yml"
-        file = File.open(filename)
-        config = YAML.load(file)[Rails.env]
+        file = File.read(filename)
+        config = YAML.load(ERB.new(file).result)[Rails.env]
 
         if config == nil
           raise "Could not load config options for #{Rails.env} from #{filename}."
@@ -21,8 +21,8 @@ module S3SwfUpload
         @@max_file_size     = config['max_file_size']
         @@acl               = config['acl'] || 'private'
 
-        
-        
+
+
         unless @@access_key_id && @@secret_access_key && @@bucket
           raise "Please configure your S3 settings in #{filename} before continuing so that S3 SWF Upload can function properly."
         end
